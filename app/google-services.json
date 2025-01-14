@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "871386420423",
+    "project_id": "bbdd-moviles-33152",
+    "storage_bucket": "bbdd-moviles-33152.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:871386420423:android:0d7e0cc7c1a68fd903dae2",
+        "android_client_info": {
+          "package_name": "com.composse.tareafinal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUNQABqWjPjWKjVJqAhDwGKqhH07UY0EY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

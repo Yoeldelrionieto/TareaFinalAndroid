@@ -1,5 +1,6 @@
 package com.composse.tareafinal
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,6 +24,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -30,6 +32,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.composse.tareafinal.ui.theme.TareaFinalTheme
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.logging.Log
+import com.google.firebase.firestore.FirebaseFirestore
+
+private lateinit var auth: FirebaseAuth
+@SuppressLint("StaticFieldLeak")
+private lateinit var firestore: FirebaseFirestore
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -55,6 +64,9 @@ class MainActivity : ComponentActivity() {
                     composable("api") {
                         ApiScreen(navController)
                     }
+                    composable("login") {
+                        LoginScreen(navController)
+                    }
                 }
             }
         }
@@ -74,6 +86,8 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 fun RegisterScreen(navController: NavController) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") } // Add a password field
+    val auth = FirebaseAuth.getInstance() // Get FirebaseAuth instance
 
     Column(
         modifier = Modifier
@@ -99,19 +113,46 @@ fun RegisterScreen(navController: NavController) {
             modifier = Modifier.fillMaxWidth()
         )
 
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Contraseña") },
+            modifier = Modifier.fillMaxWidth(),
+            visualTransformation = PasswordVisualTransformation() // Hide password
+        )
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                // Navegar a HomeScreen y pasar el nombre
-                navController.navigate("home")
+                auth.createUserWithEmailAndPassword(email, password)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            // Navigate to HomeScreen on successful registration
+                            navController.navigate("home")
+                        } else {
+                            // Handle registration error
+
+                        }
+                    }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Registrarse")
         }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = { navController.navigate("login") },
+            // Navigate to LoginScreen
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Ir a Iniciar Sesión")
+        }
     }
 }
+
 
 @Preview(showBackground = true)
 @Composable

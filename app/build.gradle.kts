@@ -2,6 +2,8 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     kotlin("kapt")
+    //Firebase
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -51,12 +53,18 @@ android {
 }
 
 dependencies {
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
+    implementation(libs.firebase.analytics)
+    implementation("com.google.firebase:firebase-auth-ktx")
+    implementation ("com.google.firebase:firebase-firestore-ktx")
+
     // Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
     // Room
     implementation ("androidx.room:room-runtime:2.5.2")
+    implementation(libs.firebase.crashlytics.buildtools)
     annotationProcessor ("androidx.room:room-compiler:2.5.2")
     kapt ("androidx.room:room-compiler:2.5.2")
 
