@@ -32,6 +32,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.composse.tareafinal.ui.theme.TareaFinalTheme
+import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.logging.Log
 import com.google.firebase.firestore.FirebaseFirestore
@@ -43,6 +44,7 @@ private lateinit var firestore: FirebaseFirestore
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
         setContent {
             // NavController para manejar la navegación
@@ -57,9 +59,12 @@ class MainActivity : ComponentActivity() {
                     composable("register") {
                         RegisterScreen(navController)
                     }
-                    composable("home") {
-                        // Pasar el nombre y el contador de accesos
-                        HomeScreen(navController, name = "Usuario", accessCount = 1)
+                    composable("home/{userId}/{name}/{accessCount}") { backStackEntry ->
+                        val userId = backStackEntry.arguments?.getString("userId") ?: ""
+                        val name = backStackEntry.arguments?.getString("name") ?: "Usuario"
+                        val accessCount = backStackEntry.arguments?.getString("accessCount")?.toInt() ?: 1
+                        // Pasar el UID del usuario, nombre y el contador de accesos
+                        HomeScreen(navController, userId = userId, name = name, accessCount = accessCount)
                     }
                     composable("api") {
                         ApiScreen(navController)
@@ -82,12 +87,14 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
     )
     RegisterScreen(rememberNavController())
 }
+
 @Composable
 fun RegisterScreen(navController: NavController) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") } // Add a password field
+    var password by remember { mutableStateOf("") }
     val auth = FirebaseAuth.getInstance() // Get FirebaseAuth instance
+    val db = FirebaseFirestore.getInstance() // Get Firestore instance
 
     Column(
         modifier = Modifier
@@ -128,11 +135,25 @@ fun RegisterScreen(navController: NavController) {
                 auth.createUserWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            // Navigate to HomeScreen on successful registration
-                            navController.navigate("home")
+                            // Guardar información del usuario en Firestore
+                            val userId = auth.currentUser?.uid
+                            val user = hashMapOf(
+                                "name" to name,
+                                "email" to email,
+                                "accessCount" to 1 // Set initial access count to 1
+                            )
+                            userId?.let {
+                                db.collection("Usuarios").document(it).set(user)
+                                    .addOnSuccessListener {
+                                        navController.navigate("home/$userId/$name/1")
+                                    }
+                                    .addOnFailureListener { e ->
+                                        //Log.e("RegisterScreen", "Error saving user: ${e.message}")
+                                    }
+                            }
                         } else {
                             // Handle registration error
-
+                            //Log.e("RegisterScreen", "Registration failed: ${task.exception?.message}")
                         }
                     }
             },
@@ -144,14 +165,15 @@ fun RegisterScreen(navController: NavController) {
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
-            onClick = { navController.navigate("login") },
-            // Navigate to LoginScreen
+            onClick = { navController.navigate("login") }, // Navigate to LoginScreen
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Ir a Iniciar Sesión")
         }
     }
 }
+
+
 
 
 @Preview(showBackground = true)

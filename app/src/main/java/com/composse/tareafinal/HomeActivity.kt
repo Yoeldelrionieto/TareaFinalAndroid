@@ -14,9 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.compose.runtime.*
+import com.google.firebase.firestore.FirebaseFirestore
 
 @Composable
-fun HomeScreen(navController: NavController, name: String, accessCount: Int) {
+fun HomeScreen(navController: NavController, userId: String, name: String, accessCount: Int) {
     Column(
         modifier = Modifier
             .fillMaxSize()
