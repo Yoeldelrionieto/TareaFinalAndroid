@@ -95,6 +95,7 @@ fun RegisterScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
     val auth = FirebaseAuth.getInstance() // Get FirebaseAuth instance
     val db = FirebaseFirestore.getInstance() // Get Firestore instance
+    val currentDate = System.currentTimeMillis() // Obtener la fecha y hora actual
 
     Column(
         modifier = Modifier
@@ -140,7 +141,8 @@ fun RegisterScreen(navController: NavController) {
                             val user = hashMapOf(
                                 "name" to name,
                                 "email" to email,
-                                "accessCount" to 1 // Set initial access count to 1
+                                "accessCount" to 1, // Set initial access count to 1
+                                "lastAccess" to currentDate // Guardar la fecha actual
                             )
                             userId?.let {
                                 db.collection("Usuarios").document(it).set(user)
@@ -172,9 +174,6 @@ fun RegisterScreen(navController: NavController) {
         }
     }
 }
-
-
-
 
 @Preview(showBackground = true)
 @Composable

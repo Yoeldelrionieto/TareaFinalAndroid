@@ -21,6 +21,7 @@ fun LoginScreen(navController: NavController) {
     var password by remember { mutableStateOf("") }
     val auth = FirebaseAuth.getInstance() // Get FirebaseAuth instance
     val db = FirebaseFirestore.getInstance() // Get Firestore instance
+    val currentDate = System.currentTimeMillis() // Obtener la fecha y hora actual
 
     Column(
         modifier = Modifier
@@ -63,7 +64,12 @@ fun LoginScreen(navController: NavController) {
                                             val name = document.getString("name") ?: "Usuario"
                                             val accessCount = document.getLong("accessCount")?.toInt() ?: 0
                                             val updatedAccessCount = accessCount + 1
-                                            db.collection("Usuarios").document(it).update("accessCount", updatedAccessCount)
+                                            db.collection("Usuarios").document(it).update(
+                                                mapOf(
+                                                    "accessCount" to updatedAccessCount,
+                                                    "lastAccess" to currentDate // Actualizar la fecha de acceso
+                                                )
+                                            )
                                             navController.navigate("home/$userId/$name/$updatedAccessCount")
                                         }
                                     }
