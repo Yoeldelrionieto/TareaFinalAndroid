@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
                         HomeScreen(navController, userId = userId, name = name, accessCount = accessCount)
                     }
                     composable("api") {
-                        ApiScreen(navController)
+                        ApiScreen(navController, UserViewModel())
                     }
                     composable("login") {
                         LoginScreen(navController)
@@ -182,3 +182,4 @@ fun RegisterScreenPreview() {
         Greeting("YOEL")
     }
 }
+
