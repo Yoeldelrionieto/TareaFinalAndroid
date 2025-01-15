@@ -1,4 +1,4 @@
-package com.composse.tareafinal
+package com.composse.tareafinal.network
 import com.composse.tareafinal.model.User
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory

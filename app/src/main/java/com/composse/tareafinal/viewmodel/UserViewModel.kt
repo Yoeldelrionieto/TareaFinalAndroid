@@ -1,7 +1,8 @@
-package com.composse.tareafinal
+package com.composse.tareafinal.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.composse.tareafinal.network.RetrofitInstance
 import com.composse.tareafinal.model.User
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

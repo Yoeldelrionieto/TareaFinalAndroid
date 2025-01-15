@@ -1,4 +1,4 @@
-package com.composse.tareafinal
+package com.composse.tareafinal.view
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,11 +30,14 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.composse.tareafinal.viewmodel.UserViewModel
 import com.composse.tareafinal.ui.theme.TareaFinalTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.crashlytics.buildtools.reloc.org.apache.commons.logging.Log
 import com.google.firebase.firestore.FirebaseFirestore
+import android.widget.Toast
+import androidx.compose.ui.platform.LocalContext
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
 
 private lateinit var auth: FirebaseAuth
 @SuppressLint("StaticFieldLeak")
@@ -93,6 +95,7 @@ fun RegisterScreen(navController: NavController) {
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val context = LocalContext.current
     val auth = FirebaseAuth.getInstance() // Get FirebaseAuth instance
     val db = FirebaseFirestore.getInstance() // Get Firestore instance
     val currentDate = System.currentTimeMillis() // Obtener la fecha y hora actual
@@ -133,31 +136,42 @@ fun RegisterScreen(navController: NavController) {
 
         Button(
             onClick = {
-                auth.createUserWithEmailAndPassword(email, password)
-                    .addOnCompleteListener { task ->
-                        if (task.isSuccessful) {
-                            // Guardar información del usuario en Firestore
-                            val userId = auth.currentUser?.uid
-                            val user = hashMapOf(
-                                "name" to name,
-                                "email" to email,
-                                "accessCount" to 1, // Set initial access count to 1
-                                "lastAccess" to currentDate // Guardar la fecha actual
-                            )
-                            userId?.let {
-                                db.collection("Usuarios").document(it).set(user)
-                                    .addOnSuccessListener {
-                                        navController.navigate("home/$userId/$name/1")
-                                    }
-                                    .addOnFailureListener { e ->
-                                        //Log.e("RegisterScreen", "Error saving user: ${e.message}")
-                                    }
+                if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                    Toast.makeText(context, "Por favor, completa todos los campos", Toast.LENGTH_SHORT).show()
+                } else {
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Guardar información del usuario en Firestore
+                                val userId = auth.currentUser?.uid
+                                val user = hashMapOf(
+                                    "name" to name,
+                                    "email" to email,
+                                    "accessCount" to 1, // Set initial access count to 1
+                                    "lastAccess" to currentDate // Guardar la fecha actual
+                                )
+                                userId?.let {
+                                    db.collection("Usuarios").document(it).set(user)
+                                        .addOnSuccessListener {
+                                            navController.navigate("home/$userId/$name/1")
+                                        }
+                                        .addOnFailureListener { e ->
+                                            Toast.makeText(context, "Error guardando usuario: ${e.message}", Toast.LENGTH_SHORT).show()
+                                        }
+                                }
+                            } else {
+                                val exception = task.exception
+                                if (exception is FirebaseAuthUserCollisionException) {
+                                    Toast.makeText(context, "Este correo ya está registrado", Toast.LENGTH_SHORT).show()
+                                } else {
+                                    Toast.makeText(context, "Error en el registro: ${exception?.message}", Toast.LENGTH_SHORT).show()
+                                }
                             }
-                        } else {
-                            // Handle registration error
-                            //Log.e("RegisterScreen", "Registration failed: ${task.exception?.message}")
                         }
-                    }
+                        .addOnFailureListener { e ->
+                            Toast.makeText(context, "Error en la autenticación: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
+                }
             },
             modifier = Modifier.fillMaxWidth()
         ) {
