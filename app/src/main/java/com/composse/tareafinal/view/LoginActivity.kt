@@ -117,6 +117,7 @@ fun Logear(email: String, password: String, navController: NavController, contex
                                             "lastAccess" to currentDate // Actualizar la fecha de acceso
                                         )
                                     )
+                                    (context as MainActivity).startPeriodicNotification()
                                     navController.navigate("home/$userId/$name/$updatedAccessCount")
                                 }
                             }

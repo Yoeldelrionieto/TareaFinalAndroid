@@ -35,9 +35,12 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import com.composse.tareafinal.ui.theme.TareaFinalTheme
 import androidx.compose.material3.*
+import androidx.compose.ui.platform.LocalContext
 
 @Composable
 fun ApiScreen(navController: NavController, viewModel: UserViewModel) {
+    // Cuando el usuario consulta la API, se debe detener la notificación periódica
+    (LocalContext.current as MainActivity).stopPeriodicNotification()
     val users by viewModel.users.collectAsState(initial = emptyList())
     TareaFinalTheme {
         Surface() {

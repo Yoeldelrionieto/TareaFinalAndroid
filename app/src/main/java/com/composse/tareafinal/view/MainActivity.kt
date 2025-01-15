@@ -3,6 +3,8 @@ package com.composse.tareafinal.view
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -47,16 +49,20 @@ import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import com.composse.tareafinal.NotificationUtils
 
 private lateinit var auth: FirebaseAuth
 @SuppressLint("StaticFieldLeak")
 private lateinit var firestore: FirebaseFirestore
-
+private lateinit var handler: Handler
+private lateinit var runnable: Runnable
 class MainActivity : ComponentActivity() {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         FirebaseApp.initializeApp(this)
         enableEdgeToEdge()
+        NotificationUtils.createNotificationChannel(this)
         setContent {
             // NavController para manejar la navegación
             val navController = rememberNavController()
@@ -86,6 +92,27 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+    // Método para iniciar la notificación periódica
+    fun startPeriodicNotification() {
+        handler = Handler(Looper.getMainLooper())
+        runnable = object : Runnable {
+            override fun run() {
+                // Lógica para mostrar la notificación
+                NotificationUtils.showNotification(
+                    context = this@MainActivity,
+                    title = "Recuerda consultar la API",
+                    message = "Haz click para iniciar sesion"
+                )
+                handler.postDelayed(this, 500) // 500ms = 0.5s
+
+            }
+        }
+        handler.post(runnable)
+    }
+    // Método para detener la notificación periódica
+    fun stopPeriodicNotification() {
+        handler.removeCallbacks(runnable)
     }
 }
 
@@ -202,6 +229,8 @@ fun Registrar(name: String, email: String, password: String, navController: NavC
                     userId?.let {
                         db.collection("Usuarios").document(it).set(user)
                             .addOnSuccessListener {
+                                // Iniciar notificaciones periódicas al iniciar sesion
+                                (context as MainActivity).startPeriodicNotification()
                                 navController.navigate("home/$userId/$name/1")
                             }
                             .addOnFailureListener { e ->
