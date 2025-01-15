@@ -58,6 +58,10 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation ("com.google.firebase:firebase-firestore-ktx")
 
+    implementation ("androidx.compose.material:material:1.0.0")
+    implementation ("androidx.compose.material3:material3:1.0.0-alpha01")
+    implementation ("androidx.compose.material:material:1.0.5")
+    implementation ("androidx.compose.material:material-icons-extended:1.0.5")
     // Retrofit
     implementation ("com.squareup.retrofit2:retrofit:2.9.0")
     implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
@@ -65,6 +69,7 @@ dependencies {
     // Room
     implementation ("androidx.room:room-runtime:2.5.2")
     implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.espresso.core)
     annotationProcessor ("androidx.room:room-compiler:2.5.2")
     kapt ("androidx.room:room-compiler:2.5.2")
 
