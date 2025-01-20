@@ -53,11 +53,19 @@ android {
 }
 
 dependencies {
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("io.coil-kt:coil-compose:2.1.0")
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0")
+    implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
+    implementation("com.google.accompanist:accompanist-navigation-animation:0.16.0")
+
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation(libs.firebase.analytics)
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation ("com.google.firebase:firebase-firestore-ktx")
 
+    implementation("io.coil-kt:coil-compose:2.1.0")
     implementation ("androidx.compose.material:material:1.0.0")
     implementation ("androidx.compose.material3:material3:1.0.0-alpha01")
     implementation ("androidx.compose.material:material:1.0.5")

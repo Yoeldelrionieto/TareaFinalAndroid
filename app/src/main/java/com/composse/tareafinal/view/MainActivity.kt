@@ -50,6 +50,7 @@ import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.composse.tareafinal.NotificationUtils
+import com.composse.tareafinal.viewmodel.AnimeViewModel
 
 private lateinit var auth: FirebaseAuth
 @SuppressLint("StaticFieldLeak")
@@ -88,6 +89,9 @@ class MainActivity : ComponentActivity() {
                     }
                     composable("login") {
                         LoginScreen(navController)
+                    }
+                    composable("apiAnime") {
+                        ApiAnimeScreen(navController, AnimeViewModel())
                     }
                 }
             }

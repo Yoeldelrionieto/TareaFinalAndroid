@@ -39,6 +39,12 @@ fun HomeScreen(navController: NavController, userId: String, name: String, acces
                 ) {
                     Text("Consultar API")
                 }
+                Button(
+                    onClick = { navController.navigate("apiAnime") },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("Consultar API Anime")
+                }
             }
         }
     }
