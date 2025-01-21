@@ -30,9 +30,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 
+
 @Composable
 fun ApiAnimeScreen(navController: NavController, viewModel: AnimeViewModel = viewModel()) {
-    val anime by viewModel.animes.collectAsState()
+    val animes by viewModel.animes.collectAsState()
     TareaFinalTheme {
         Surface {
             Column(
@@ -44,7 +45,7 @@ fun ApiAnimeScreen(navController: NavController, viewModel: AnimeViewModel = vie
             ) {
                 Text(text = "Datos de la API", modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp), textAlign = TextAlign.Center)
 
-                if (anime.isEmpty()) {
+                if (animes.isEmpty()) {
                     Text(text = "No hay datos disponibles!", modifier = Modifier.align(Alignment.CenterHorizontally))
                 } else {
                     LazyColumn(
@@ -53,7 +54,7 @@ fun ApiAnimeScreen(navController: NavController, viewModel: AnimeViewModel = vie
                             .weight(1f)
                             .padding(bottom = 16.dp)
                     ) {
-                        items(anime) { anime ->
+                        items(animes) { anime ->
                             Surface(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -73,7 +74,7 @@ fun ApiAnimeScreen(navController: NavController, viewModel: AnimeViewModel = vie
                                         textAlign = TextAlign.Justify
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Text(
+                                    /**Text(
                                         text = buildAnnotatedString {
                                             append("Sinopsis: ")
                                             withStyle(style = SpanStyle(fontWeight = FontWeight.Bold)) {
@@ -83,7 +84,7 @@ fun ApiAnimeScreen(navController: NavController, viewModel: AnimeViewModel = vie
                                         style = MaterialTheme.typography.body1,
                                         modifier = Modifier.fillMaxWidth(),
                                         textAlign = TextAlign.Justify
-                                    )
+                                    )*/
                                     Spacer(modifier = Modifier.height(4.dp))
                                     Text(
                                         text = buildAnnotatedString {
@@ -97,17 +98,21 @@ fun ApiAnimeScreen(navController: NavController, viewModel: AnimeViewModel = vie
                                         textAlign = TextAlign.Justify
                                     )
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Image(
-                                        painter = rememberImagePainter(anime.posterImage),
-                                        contentDescription = null,
-                                        modifier = Modifier.fillMaxWidth().height(200.dp)
-                                    )
+                                    if (anime.posterImage?.isNotEmpty() == true) {
+                                        Image(
+                                            painter = rememberImagePainter(anime.posterImage),
+                                            contentDescription = null,
+                                            modifier = Modifier.fillMaxWidth().height(200.dp)
+                                        )
+                                    }
                                     Spacer(modifier = Modifier.height(4.dp))
-                                    Image(
-                                        painter = rememberImagePainter(anime.coverImage),
-                                        contentDescription = null,
-                                        modifier = Modifier.fillMaxWidth().height(200.dp)
-                                    )
+                                    if (anime.coverImage?.isNotEmpty() == true) {
+                                        Image(
+                                            painter = rememberImagePainter(anime.coverImage),
+                                            contentDescription = null,
+                                            modifier = Modifier.fillMaxWidth().height(200.dp)
+                                        )
+                                    }
                                 }
                             }
                         }

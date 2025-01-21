@@ -51,50 +51,66 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import com.composse.tareafinal.NotificationUtils
 import com.composse.tareafinal.viewmodel.AnimeViewModel
+import com.google.android.gms.common.ConnectionResult
+import com.google.android.gms.common.GoogleApiAvailability
+import com.composse.tareafinal.view.ApiAnimeScreen
+import com.composse.tareafinal.view.ApiScreen
+import com.composse.tareafinal.view.HomeScreen
+import com.composse.tareafinal.view.LoginScreen
 
 private lateinit var auth: FirebaseAuth
 @SuppressLint("StaticFieldLeak")
 private lateinit var firestore: FirebaseFirestore
 private lateinit var handler: Handler
 private lateinit var runnable: Runnable
+
 class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        FirebaseApp.initializeApp(this)
-        enableEdgeToEdge()
-        NotificationUtils.createNotificationChannel(this)
-        setContent {
-            // NavController para manejar la navegación
-            val navController = rememberNavController()
-            // Usamos Scaffold como contenedor principal
-            Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                NavHost(
-                    navController = navController,
-                    startDestination = "register",
-                    modifier = Modifier.padding(innerPadding)
-                ) {
-                    composable("register") {
-                        RegisterScreen(navController)
-                    }
-                    composable("home/{userId}/{name}/{accessCount}") { backStackEntry ->
-                        val userId = backStackEntry.arguments?.getString("userId") ?: ""
-                        val name = backStackEntry.arguments?.getString("name") ?: "Usuario"
-                        val accessCount = backStackEntry.arguments?.getString("accessCount")?.toInt() ?: 1
-                        // Pasar el UID del usuario, nombre y el contador de accesos
-                        HomeScreen(navController, userId = userId, name = name, accessCount = accessCount)
-                    }
-                    composable("api") {
-                        ApiScreen(navController, UserViewModel())
-                    }
-                    composable("login") {
-                        LoginScreen(navController)
-                    }
-                    composable("apiAnime") {
-                        ApiAnimeScreen(navController, AnimeViewModel())
+
+        // Verificación de Google Play Services
+        val resultCode = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this)
+        if (resultCode == ConnectionResult.SUCCESS) {
+            // Google Play Services está disponible
+            FirebaseApp.initializeApp(this)
+            enableEdgeToEdge()
+            NotificationUtils.createNotificationChannel(this)
+            setContent {
+                // NavController para manejar la navegación
+                val navController = rememberNavController()
+                // Usamos Scaffold como contenedor principal
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    NavHost(
+                        navController = navController,
+                        startDestination = "register",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable("register") {
+                            RegisterScreen(navController)
+                        }
+                        composable("home/{userId}/{name}/{accessCount}") { backStackEntry ->
+                            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+                            val name = backStackEntry.arguments?.getString("name") ?: "Usuario"
+                            val accessCount = backStackEntry.arguments?.getString("accessCount")?.toInt() ?: 1
+                            // Pasar el UID del usuario, nombre y el contador de accesos
+                            HomeScreen(navController, userId = userId, name = name, accessCount = accessCount)
+                        }
+                        composable("api") {
+                            ApiScreen(navController, UserViewModel())
+                        }
+                        composable("login") {
+                            LoginScreen(navController)
+                        }
+                        composable("apiAnime") {
+                            ApiAnimeScreen(navController, AnimeViewModel())
+                        }
                     }
                 }
             }
+        } else {
+            // Google Play Services no está disponible
+            GoogleApiAvailability.getInstance().getErrorDialog(this, resultCode, 404)?.show()
         }
     }
     // Método para iniciar la notificación periódica

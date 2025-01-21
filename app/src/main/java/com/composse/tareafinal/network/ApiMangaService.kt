@@ -8,10 +8,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.Response
+import retrofit2.http.Query
 
 interface ApiMangaService {
-    @GET("anime/{id}")
-    suspend fun getAnime(@Path("id") animeId: String): Response<AnimeResponse>
+    /**@GET("anime/{id}")
+    suspend fun getAnime(@Path("id") animeId: String): Response<AnimeResponse>*/
+    @GET("anime")
+    suspend fun getAnimes(): Response<AnimeResponse>
 }
 
 object RetrofitInstancia {

@@ -16,35 +16,40 @@ class AnimeViewModel : ViewModel() {
     val animes: StateFlow<List<Anime>> = _animes
 
     init {
-        fetchAnime("1") // Ejemplo para obtener el primer anime
+        fetchAnimes() // Obtener solo 10 animes
     }
 
-    private fun fetchAnime(animeId: String) {
+    private fun fetchAnimes() {
         viewModelScope.launch {
             try {
-                val response: Response<AnimeResponse> = RetrofitInstancia.api.getAnime(animeId)
+                val response: Response<AnimeResponse> = RetrofitInstancia.api.getAnimes()
                 if (response.isSuccessful) {
-                    val animeData = response.body()?.data
-                    if (animeData != null) {
-                        val anime = Anime(
-                            id = animeData.id,
-                            title = animeData.attributes.canonicalTitle,
-                            synopsis = animeData.attributes.synopsis,
-                            rating = animeData.attributes.averageRating?.toDoubleOrNull() ?: 0.0,
-                            posterImage = animeData.attributes.posterImage.large,
-                            coverImage = animeData.attributes.coverImage.large
-                        )
-                        Log.d("AnimeViewModel", "Anime obtenido: $anime")
-                        _animes.value = listOf(anime)
+                    response.body()?.data?.let { animeDataList ->
+                        val animeList = animeDataList.mapNotNull { animeData ->
+                            try {
+                                Anime(
+                                    id = animeData.id ?: "",
+                                    title = animeData.attributes?.canonicalTitle ?: "Título no disponible",
+                                    synopsis = animeData.attributes?.synopsis ?: "Sinopsis no disponible",
+                                    rating = animeData.attributes?.averageRating?.toDoubleOrNull() ?: 0.0,
+                                    posterImage = animeData.attributes?.posterImage?.large ?: "",
+                                    coverImage = animeData.attributes?.coverImage?.large ?: ""
+                                )
+                            } catch (e: Exception) {
+                                Log.e("AnimeViewModel", "Error al procesar anime: ${animeData.id}, ${e.message}")
+                                null
+                            }
+                        }
+                        Log.d("AnimeViewModel", "Animes obtenidos: $animeList")
+                        _animes.value = animeList
                     }
                 } else {
-                    Log.e("AnimeViewModel", "Error al obtener anime: ${response.message()}")
+                    Log.e("AnimeViewModel", "Error al obtener animes: ${response.message()}")
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e("AnimeViewModel", "Error al obtener anime: ${e.message}")
+                Log.e("AnimeViewModel", "Error al obtener animes: ${e.message}")
             }
         }
     }
 }
-
