@@ -1,6 +1,6 @@
 package com.composse.tareafinal.viewmodel
 
-import androidx.lifecycle.ViewModel
+/**import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.composse.tareafinal.model.Anime
 import com.composse.tareafinal.network.RetrofitInstancia
@@ -52,4 +52,4 @@ class AnimeViewModel : ViewModel() {
             }
         }
     }
-}
+}*/

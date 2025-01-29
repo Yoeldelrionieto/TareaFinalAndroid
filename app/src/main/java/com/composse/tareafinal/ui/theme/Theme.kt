@@ -15,10 +15,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 private val LightColorPalette = lightColorScheme(
-    primary = TerracottaRed,
+    primary = DarkBackground,
     secondary = Cream,
     background = WarmBrown,
-    surface = SkyBlue,
+    surface = RelaxingBlue,
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F)
 )

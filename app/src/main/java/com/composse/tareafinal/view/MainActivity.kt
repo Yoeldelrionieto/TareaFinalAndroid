@@ -47,16 +47,13 @@ import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import com.composse.tareafinal.NotificationUtils
-import com.composse.tareafinal.viewmodel.AnimeViewModel
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
-import com.composse.tareafinal.view.ApiAnimeScreen
-import com.composse.tareafinal.view.ApiScreen
-import com.composse.tareafinal.view.HomeScreen
-import com.composse.tareafinal.view.LoginScreen
+import com.composse.tareafinal.viewmodel.AnimeJikanViewModel
 
 private lateinit var auth: FirebaseAuth
 @SuppressLint("StaticFieldLeak")
@@ -103,7 +100,36 @@ class MainActivity : ComponentActivity() {
                             LoginScreen(navController)
                         }
                         composable("apiAnime") {
-                            ApiAnimeScreen(navController, AnimeViewModel())
+                            ApiAnimeJikanScreen(navController, AnimeJikanViewModel())
+                        }
+                        composable(
+                            "details/{animeId}?title={title}&posterImage={posterImage}&rating={rating}&duration={duration}&aired={aired}&genres={genres}&studios={studios}&producers={producers}&trailerUrl={trailerUrl}",
+                            arguments = listOf(
+                                navArgument("animeId") { type = NavType.IntType },
+                                navArgument("title") { type = NavType.StringType; defaultValue = "Sin título" },
+                                navArgument("posterImage") { type = NavType.StringType; defaultValue = "" },
+                                navArgument("rating") { type = NavType.StringType; defaultValue = "N/A" },
+                                navArgument("duration") { type = NavType.StringType; defaultValue = "Desconocida" },
+                                navArgument("aired") { type = NavType.StringType; defaultValue = "Desconocido" },
+                                navArgument("genres") { type = NavType.StringType; defaultValue = "Desconocido" },
+                                navArgument("studios") { type = NavType.StringType; defaultValue = "Desconocido" },
+                                navArgument("producers") { type = NavType.StringType; defaultValue = "Desconocido" },
+                                navArgument("trailerUrl") { type = NavType.StringType; defaultValue = "" }
+                            )
+                        ) { backStackEntry ->
+                            val args = backStackEntry.arguments!!
+                            DetailsAnimeScreen(
+                                navController = navController,
+                                title = args.getString("title"),
+                                posterImage = args.getString("posterImage"),
+                                rating = args.getString("rating")?.toDoubleOrNull(),
+                                duration = args.getString("duration"),
+                                aired = args.getString("aired"),
+                                genres = args.getString("genres"),
+                                studios = args.getString("studios"),
+                                producers = args.getString("producers"),
+                                trailerUrl = args.getString("trailerUrl")
+                            )
                         }
                     }
                 }

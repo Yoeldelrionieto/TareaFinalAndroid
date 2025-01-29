@@ -1,6 +1,6 @@
 package com.composse.tareafinal.model
 
-data class Anime(
+/** data class Anime(
     val id: String,
     val title: String?,
     val synopsis: String?,
@@ -28,7 +28,7 @@ data class AnimeAttributes(
 
 data class Image(
     val large: String?
-)
+)*/
 
 
 

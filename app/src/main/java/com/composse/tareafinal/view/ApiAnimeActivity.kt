@@ -22,17 +22,17 @@ import androidx.navigation.NavController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.rememberImagePainter
 import com.composse.tareafinal.ui.theme.TareaFinalTheme
-import com.composse.tareafinal.viewmodel.AnimeViewModel
 //import kotlinx.coroutines.flow.collectAsState
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import com.composse.tareafinal.viewmodel.AnimeJikanViewModel
 
 
-@Composable
-fun ApiAnimeScreen(navController: NavController, viewModel: AnimeViewModel = viewModel()) {
+/**@Composable
+fun ApiAnimeScreen(navController: NavController, viewModel: AnimeJikanViewModel = viewModel()) {
     val animes by viewModel.animes.collectAsState()
     TareaFinalTheme {
         Surface {
@@ -121,4 +121,4 @@ fun ApiAnimeScreen(navController: NavController, viewModel: AnimeViewModel = vie
             }
         }
     }
-}
+}*/
