@@ -165,8 +165,8 @@ class MainActivity : ComponentActivity() {
                 // Lógica para mostrar la notificación
                 NotificationUtils.showNotification(
                     context = this@MainActivity,
-                    title = "Recuerda consultar la API",
-                    message = "Haz click para iniciar sesion"
+                    title = "Nuevos animes te esperan en la API",
+                    message = "Haz click para consultar la API"
                 )
                 handler.postDelayed(this, 500) // 500ms = 0.5s
 

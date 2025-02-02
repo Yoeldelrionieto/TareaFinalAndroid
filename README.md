@@ -4,6 +4,7 @@
 
 Es aplicación para Android que permite a los usuarios consultar información sobre animes utilizando la API de Jikan. La aplicación ofrece una interfaz de usuario atractiva y funcional, permitiendo a los usuarios navegar por una lista de animes, ver detalles específicos de cada uno, y acceder a sus trailers. La aplicación incluye un sistema de autenticación de usuarios con Firebase, gestión de perfiles y notificaciones periódicas
 
+
 ## Características Principales
 
 *   **Consulta de Animes:**
