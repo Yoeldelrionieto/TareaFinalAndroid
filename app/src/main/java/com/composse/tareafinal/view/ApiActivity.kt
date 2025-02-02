@@ -129,7 +129,7 @@ fun ApiScreen(navController: NavController, viewModel: UserViewModel) {
                     Spacer(modifier = Modifier.width(16.dp))
 
                     Button(
-                        onClick = { navController.navigate("login") },
+                        onClick = { navController.popBackStack() },
                         modifier = Modifier.weight(1f)
                     ) {
                         Text("Volver")

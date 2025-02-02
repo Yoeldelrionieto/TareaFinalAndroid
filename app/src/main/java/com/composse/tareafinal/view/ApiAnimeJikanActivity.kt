@@ -6,6 +6,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -46,6 +47,7 @@ import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.unit.sp
 import com.composse.tareafinal.R
 import java.net.URLEncoder
+import kotlin.system.exitProcess
 
 
 @Composable
@@ -61,12 +63,9 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
         Surface {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .padding(16.dp)
             ) {
-
-
                 Text(
                     text = "Datos de la API de Jikan",
                     modifier = Modifier
@@ -77,22 +76,21 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
 
                 if (animes.isEmpty() && !isLoading) {
                     Text(
-                        text = "No hay datos disponibles!",
+                        text = "¡No hay datos disponibles!",
                         modifier = Modifier.align(Alignment.CenterHorizontally)
                     )
                 } else {
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(3),
                         modifier = Modifier
-                            .fillMaxSize()
+                            .fillMaxWidth()
                             .weight(1f)
-                            .padding(bottom = 1.dp)
+                            .padding(bottom = 16.dp)
                     ) {
                         items(animes) { anime ->
                             Surface(
                                 modifier = Modifier
-                                    .fillMaxSize()
-                                    .padding(1.dp),
+                                    .fillMaxWidth(),
                                 onClick = {
                                     navController.navigate(
                                         "details/${anime.id}?title=${Uri.encode(anime.title)}" +
@@ -108,7 +106,6 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
                                                 "&synopsis=${Uri.encode(anime.synopsis ?: "Sin sinopsis disponible")}"
                                     )
                                 }
-
                             ) {
                                 Column {
                                     if (!anime.posterImage.isNullOrEmpty()) {
@@ -116,7 +113,7 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
                                             painter = rememberImagePainter(anime.posterImage),
                                             contentDescription = null,
                                             modifier = Modifier
-                                                .fillMaxSize()
+                                                .fillMaxWidth()
                                                 .height(200.dp)
                                                 .aspectRatio(3f / 4f)
                                         )
@@ -124,9 +121,9 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
                                     Text(
                                         text = formatTitle(anime.title ?: "Sin título"),
                                         modifier = Modifier
-                                            .fillMaxSize(),
+                                            .fillMaxWidth(),
                                         fontFamily = customFont,
-                                        fontSize = 20.sp,
+                                        fontSize = 16.sp,
                                         textAlign = TextAlign.Center
                                     )
                                 }
@@ -156,7 +153,28 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
                     }
                 }
 
+                // Añadimos los botones de "Volver" y "Cerrar App" al final
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Button(
+                        onClick = { closeApp2() },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Cerrar App")
+                    }
 
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Button(
+                        onClick = { navController.popBackStack() },
+                        modifier = Modifier.weight(1f)
+                    ) {
+                        Text("Volver")
+                    }
+                }
             }
         }
     }
@@ -169,3 +187,9 @@ fun formatTitle(title: String): String {
         title
     }
 }
+
+// Función para cerrar la aplicación
+fun closeApp2() {
+    exitProcess(0)
+}
+

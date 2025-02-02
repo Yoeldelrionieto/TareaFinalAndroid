@@ -3,6 +3,7 @@ package com.composse.tareafinal.view
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -35,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
@@ -58,85 +60,124 @@ fun HomeScreen(navController: NavController, userId: String, name: String, acces
     val customFont = FontFamily(
         Font(R.font.mono_regular)
     )
-    
+    // Determinar si el tema es oscuro o claro
+    val isDarkTheme = isSystemInDarkTheme()
+
+    // Seleccionar la imagen de fondo adecuada
+    val backgroundImage = if (isDarkTheme) {
+        painterResource(id = R.drawable.background_noir) // Imagen para modo oscuro
+    } else {
+        painterResource(id = R.drawable.background_light) // Imagen para modo claro
+    }
     TareaFinalTheme {
-        Surface {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Top,
-                horizontalAlignment = Alignment.CenterHorizontally
+        // Usamos Box para apilar la imagen de fondo y el contenido
+        Box(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            // Imagen de fondo
+            Image(
+                painter = backgroundImage,
+                contentDescription = null,
+                contentScale = ContentScale.Crop, // Ajusta la imagen para llenar el área
+                modifier = Modifier.fillMaxSize()
+            )
+            Surface(
+                color = Color.Transparent
             ) {
-                Card(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(8.dp),
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Top,
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Column(
-                        modifier = Modifier.padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(8.dp),
                     ) {
-                        Box(contentAlignment = Alignment.TopEnd) {
-                            Image(
-                                painter = painterResource(id = selectedImage),
-                                contentDescription = "Imagen de perfil",
+                        Column(
+                            modifier = Modifier.padding(16.dp),
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+                            // Aquí aplicamos los cambios
+                            Box(
                                 modifier = Modifier
-                                    .size(60.dp)
-                                    .clip(CircleShape)
-                                    .border(2.dp, Color.Gray, CircleShape)
-                            )
-                            IconButton(onClick = { showImageOptions = !showImageOptions }) {
-                                Icon(Icons.Default.Edit, contentDescription = "Cambiar imagen")
-                            }
-                        }
-                        if (showImageOptions) {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp),
-                                horizontalArrangement = Arrangement.Center
+                                    .size(60.dp), // Aseguramos que el Box tenga el mismo tamaño que la imagen
+                                contentAlignment = Alignment.BottomEnd // Movemos el IconButton a la esquina inferior derecha
                             ) {
-                                listOf(R.drawable.profile_placeholder, R.drawable.images2, R.drawable.images3).forEach { imageRes ->
-                                    Image(
-                                        painter = painterResource(id = imageRes),
-                                        contentDescription = "Imagen alternativa",
-                                        modifier = Modifier
-                                            .size(40.dp)
-                                            .clip(RoundedCornerShape(4.dp))
-                                            .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
-                                            .clickable {
-                                                selectedImage = imageRes
-                                                showImageOptions = false
-                                            }
-                                    )
-                                    Spacer(modifier = Modifier.width(4.dp))
+                                Image(
+                                    painter = painterResource(id = selectedImage),
+                                    contentDescription = "Imagen de perfil",
+                                    modifier = Modifier
+                                        .fillMaxSize() // La imagen llena todo el espacio del Box
+                                        .clip(CircleShape)
+                                        .border(2.dp, Color.Gray, CircleShape)
+                                )
+                                IconButton(
+                                    onClick = { showImageOptions = !showImageOptions },
+                                    modifier = Modifier
+                                        .size(24.dp) // Ajustamos el tamaño del IconButton si es necesario
+                                ) {
+                                    Icon(Icons.Default.Edit, contentDescription = "Cambiar imagen")
                                 }
                             }
+                            if (showImageOptions) {
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp),
+                                    horizontalArrangement = Arrangement.Center
+                                ) {
+                                    listOf(
+                                        R.drawable.profile_placeholder,
+                                        R.drawable.images2,
+                                        R.drawable.images3
+                                    ).forEach { imageRes ->
+                                        Image(
+                                            painter = painterResource(id = imageRes),
+                                            contentDescription = "Imagen alternativa",
+                                            modifier = Modifier
+                                                .size(40.dp)
+                                                .clip(RoundedCornerShape(4.dp))
+                                                .border(1.dp, Color.Gray, RoundedCornerShape(4.dp))
+                                                .clickable {
+                                                    selectedImage = imageRes
+                                                    showImageOptions = false
+                                                }
+                                        )
+                                        Spacer(modifier = Modifier.width(4.dp))
+                                    }
+                                }
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = name,
+                                fontFamily = customFont,
+                                fontSize = 20.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "Veces accedidas: $accessCount",
+                                fontSize = 16.sp,
+                                fontFamily = customFont
+                            )
                         }
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = name,
-                            fontFamily = customFont,
-                            fontSize = 20.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(text = "Veces accedidas: $accessCount", fontSize = 16.sp, fontFamily = customFont)
                     }
-                }
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = { navController.navigate("api") },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Consultar API")
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(
-                    onClick = { navController.navigate("apiAnime") },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Consultar API Anime")
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Button(
+                        onClick = { navController.navigate("api") },
+                        modifier = Modifier.fillMaxWidth().height(50.dp)
+                    ) {
+                        Text("Consultar API", fontFamily = customFont)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(
+                        onClick = { navController.navigate("apiAnime") },
+                        modifier = Modifier.fillMaxWidth().height(50.dp)
+                    ) {
+                        Text("Consultar API Anime", fontFamily = customFont)
+                    }
                 }
             }
         }

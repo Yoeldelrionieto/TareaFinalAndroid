@@ -23,7 +23,7 @@ private val LightColorPalette = lightColorScheme(
     primary = DarkBackground,
     secondary = Cream,
     background = WarmBrown,
-    surface = RelaxingBlue,
+    surface = Color(0xFFECECEC),
     onBackground = Color(0xFF1C1B1F),
     onSurface = Color(0xFF1C1B1F)
 )

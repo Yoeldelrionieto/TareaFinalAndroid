@@ -39,6 +39,9 @@ import com.google.firebase.FirebaseApp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import android.widget.Toast
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.ui.platform.LocalContext
@@ -48,9 +51,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.Surface
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.composse.tareafinal.NotificationUtils
+import com.composse.tareafinal.R
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.GoogleApiAvailability
 import com.composse.tareafinal.viewmodel.AnimeJikanViewModel
@@ -188,78 +198,99 @@ fun RegisterScreen(navController: NavController) {
     val context = LocalContext.current
     var passwordVisible by remember { mutableStateOf(false) }
 
+    val customFont = FontFamily(
+        Font(R.font.mono_regular)
+    )
+    // Determinar si el tema es oscuro o claro
+    val isDarkTheme = isSystemInDarkTheme()
+
+    // Seleccionar la imagen de fondo adecuada
+    val backgroundImage = if (isDarkTheme) {
+        painterResource(id = R.drawable.background_noir) // Reemplaza con el nombre de tu imagen de fondo para modo oscuro
+    } else {
+        painterResource(id = R.drawable.background_ligth) // Reemplaza con el nombre de tu imagen de fondo para modo claro
+    }
     TareaFinalTheme {
-        Surface(
-            modifier = Modifier.fillMaxSize(),
-            //color = MaterialTheme.colorScheme.background
+        // Usamos Box para apilar la imagen de fondo y el contenido
+        Box(
+            modifier = Modifier.fillMaxSize()
         ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.Center,
-                horizontalAlignment = Alignment.CenterHorizontally,
+            // Imagen de fondo
+            Image(
+                painter = backgroundImage,
+                contentDescription = null,
+                contentScale = ContentScale.Crop, // Ajusta la imagen para llenar el área
+                modifier = Modifier.fillMaxSize()
+            )
 
+            // Superficie semi-transparente para oscurecer o aclarar el fondo si es necesario
+            Surface(
+                modifier = Modifier.fillMaxSize(), color = Color.Transparent // Ajusta la opacidad si deseas oscurecer el fondo
+            ) {// Contenido principal
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                Text(text = "Registro")
-                Spacer(modifier = Modifier.height(16.dp))
+                    Text(text = "Registro", fontFamily = customFont, fontSize = 40.sp)
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
-                    label = { Text("Nombre") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    OutlinedTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        label = { Text("Nombre") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                OutlinedTextField(
-                    value = email,
-                    onValueChange = { email = it },
-                    label = { Text("Correo electrónico") },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    OutlinedTextField(
+                        value = email,
+                        onValueChange = { email = it },
+                        label = { Text("Correo electrónico") },
+                        modifier = Modifier.fillMaxWidth()
+                    )
 
-                OutlinedTextField(
-                    value = password,
-                    onValueChange = { password = it },
-                    label = { Text("Contraseña") },
-                    modifier = Modifier.fillMaxWidth(),
-                    visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                    trailingIcon = {
-                        val image = if (passwordVisible)
-                            Icons.Filled.Visibility
-                        else Icons.Filled.VisibilityOff
+                    OutlinedTextField(
+                        value = password,
+                        onValueChange = { password = it },
+                        label = { Text("Contraseña") },
+                        modifier = Modifier.fillMaxWidth(),
+                        visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                        trailingIcon = {
+                            val image = if (passwordVisible)
+                                Icons.Filled.Visibility
+                            else Icons.Filled.VisibilityOff
 
-                        IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                            Icon(imageVector = image, contentDescription = null)
+                            IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                                Icon(imageVector = image, contentDescription = null)
+                            }
                         }
+                    )
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Button(
+                        onClick = {
+                            Registrar(name, email, password, navController, context)
+                        },
+                        modifier = Modifier.fillMaxWidth().height(50.dp)
+                    ) {
+                        Text("Registrarse", fontFamily = customFont)
                     }
-                )
 
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = {
-                        Registrar(name, email, password, navController, context)
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Registrarse")
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Button(
-                    onClick = { navController.navigate("login") }, // Navigate to LoginScreen
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Ir a Iniciar Sesión")
+                    Button(
+                        onClick = { navController.navigate("login") }, // Navegar a LoginScreen
+                        modifier = Modifier.fillMaxWidth().height(50.dp)
+                    ) {
+                        Text("Ir a Iniciar Sesión", fontFamily = customFont)
+                    }
                 }
             }
         }
-
     }
-
 }
 fun Registrar(name: String, email: String, password: String, navController: NavController, context: Context){
     if (name.isEmpty() || email.isEmpty() || password.isEmpty()) {
