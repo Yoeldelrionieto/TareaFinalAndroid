@@ -7,12 +7,17 @@ data class AnimeJikan(
     val rating: Double?,
     val posterImage: String?,
     val url: String?,
-    val trailerUrl: String?, // URL del tráiler
-    val genres: List<String>?, // Lista de géneros
-    val producers: List<String>?, // Lista de productores
-    val studios: List<String>?, // Lista de estudios
-    val duration: String?, // Duración de episodios
-    val aired: String? // Fecha de emisión
+    val trailerUrl: String?,
+    val genres: List<String>?,
+    val producers: List<String>?,
+    val studios: List<String>?,
+    val duration: String?,
+    val aired: String?,
+    val episodes: Int?,
+    val background: String?,
+    val relatedAnimes: List<String>?,
+    val coverImage: String?,
+    val backgroundImage: String?
 )
 
 data class AnimeResponse(
@@ -46,15 +51,22 @@ data class AnimeData(
     val producers: List<AnimeProducer>?,
     val studios: List<AnimeStudio>?,
     val duration: String?,
-    val aired: Aired?
+    val aired: Aired?,
+    val episodes: Int?,
+    val background: String?,
+    val relations: List<Relation>?
 )
 
+
 data class AnimeImages(
-    val jpg: ImageDetails?
+    val jpg: ImageDetails?,
+    val webp: ImageDetails?
 )
 
 data class ImageDetails(
-    val image_url: String?
+    val image_url: String?,
+    val large_image_url: String?,
+    val small_image_url: String?
 )
 
 data class AnimeTrailer(
@@ -76,3 +88,15 @@ data class AnimeStudio(
 data class Aired(
     val string: String?
 )
+data class RelatedAnimeEntry(
+    val mal_id: Int,
+    val type: String?,
+    val name: String?,
+    val url: String?
+)
+
+data class Relation(
+    val relation: String?,
+    val entry: List<RelatedAnimeEntry>?
+)
+

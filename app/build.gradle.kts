@@ -60,6 +60,8 @@ dependencies {
     implementation("androidx.navigation:navigation-compose:2.4.0-alpha10")
     implementation("com.google.accompanist:accompanist-navigation-animation:0.16.0")
 
+    implementation ("androidx.compose.ui:ui-text-google-fonts:1.5.1")
+
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation(libs.firebase.analytics)
     implementation("com.google.firebase:firebase-auth-ktx")
@@ -78,6 +80,9 @@ dependencies {
     implementation ("androidx.room:room-runtime:2.5.2")
     implementation(libs.firebase.crashlytics.buildtools)
     implementation(libs.androidx.espresso.core)
+    implementation(libs.androidx.ui.text.google.fonts)
+    implementation(libs.androidx.animation.core.android)
+    implementation(libs.androidx.animation.core.android)
     annotationProcessor ("androidx.room:room-compiler:2.5.2")
     kapt ("androidx.room:room-compiler:2.5.2")
 
@@ -103,4 +108,15 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+
+    implementation ("androidx.compose.ui:ui:1.0.5")
+    implementation ("androidx.compose.ui:ui:1.0.1")
+    implementation ("androidx.compose.ui:ui-tooling:1.0.1")
+    implementation ("androidx.compose.material:material:1.0.1")
+    implementation("androidx.compose.material:material:1.5.0")
+    implementation ("androidx.navigation:navigation-compose:2.4.0-alpha10")
+    implementation ("com.google.accompanist:accompanist-coil:0.14.0")
+    implementation ("androidx.compose.ui:ui-text-google-fonts:1.0.1")
+
 }

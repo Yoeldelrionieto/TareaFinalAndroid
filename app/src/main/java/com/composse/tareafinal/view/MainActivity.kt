@@ -103,7 +103,10 @@ class MainActivity : ComponentActivity() {
                             ApiAnimeJikanScreen(navController, AnimeJikanViewModel())
                         }
                         composable(
-                            "details/{animeId}?title={title}&posterImage={posterImage}&rating={rating}&duration={duration}&aired={aired}&genres={genres}&studios={studios}&producers={producers}&trailerUrl={trailerUrl}",
+                            "details/{animeId}?" +
+                                    "title={title}&posterImage={posterImage}&rating={rating}&duration={duration}&" +
+                                    "aired={aired}&genres={genres}&studios={studios}&producers={producers}&" +
+                                    "trailerUrl={trailerUrl}&episodes={episodes}&synopsis={synopsis}",
                             arguments = listOf(
                                 navArgument("animeId") { type = NavType.IntType },
                                 navArgument("title") { type = NavType.StringType; defaultValue = "Sin título" },
@@ -114,10 +117,13 @@ class MainActivity : ComponentActivity() {
                                 navArgument("genres") { type = NavType.StringType; defaultValue = "Desconocido" },
                                 navArgument("studios") { type = NavType.StringType; defaultValue = "Desconocido" },
                                 navArgument("producers") { type = NavType.StringType; defaultValue = "Desconocido" },
-                                navArgument("trailerUrl") { type = NavType.StringType; defaultValue = "" }
+                                navArgument("trailerUrl") { type = NavType.StringType; defaultValue = "" },
+                                navArgument("episodes") { type = NavType.IntType; defaultValue = -1 },
+                                navArgument("synopsis") { type = NavType.StringType; defaultValue = "Sin sinopsis disponible" }
                             )
                         ) { backStackEntry ->
                             val args = backStackEntry.arguments!!
+
                             DetailsAnimeScreen(
                                 navController = navController,
                                 title = args.getString("title"),
@@ -128,7 +134,9 @@ class MainActivity : ComponentActivity() {
                                 genres = args.getString("genres"),
                                 studios = args.getString("studios"),
                                 producers = args.getString("producers"),
-                                trailerUrl = args.getString("trailerUrl")
+                                trailerUrl = args.getString("trailerUrl"),
+                                episodes = args.getInt("episodes").takeIf { it != -1 },
+                                synopsis = args.getString("synopsis")
                             )
                         }
                     }

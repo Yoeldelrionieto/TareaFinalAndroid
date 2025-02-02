@@ -1,5 +1,6 @@
 package com.composse.tareafinal.view
 
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.border
@@ -38,12 +39,24 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.unit.sp
+import com.composse.tareafinal.R
+import java.net.URLEncoder
+
 
 @Composable
 fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewModel = viewModel()) {
+    (LocalContext.current as MainActivity).stopPeriodicNotification()
     val animes by viewModel.animes.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
 
+    val customFont = FontFamily(
+        Font(R.font.coolvetica_rg)
+    )
     TareaFinalTheme {
         Surface {
             Column(
@@ -52,6 +65,8 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+
+
                 Text(
                     text = "Datos de la API de Jikan",
                     modifier = Modifier
@@ -80,9 +95,20 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
                                     .padding(1.dp),
                                 onClick = {
                                     navController.navigate(
-                                        "details/${anime.id}?title=${anime.title}&posterImage=${anime.posterImage ?: ""}&rating=${anime.rating ?: "N/A"}&duration=${anime.duration ?: "Desconocida"}&aired=${anime.aired ?: "Desconocido"}&genres=${anime.genres?.joinToString() ?: "Desconocido"}&studios=${anime.studios?.joinToString() ?: "Desconocido"}&producers=${anime.producers?.joinToString() ?: "Desconocido"}&trailerUrl=${anime.trailerUrl ?: ""}"
+                                        "details/${anime.id}?title=${Uri.encode(anime.title)}" +
+                                                "&posterImage=${Uri.encode(anime.posterImage ?: "")}" +
+                                                "&rating=${anime.rating ?: "N/A"}" +
+                                                "&duration=${Uri.encode(anime.duration ?: "Desconocida")}" +
+                                                "&aired=${Uri.encode(anime.aired ?: "Desconocido")}" +
+                                                "&genres=${Uri.encode(anime.genres?.joinToString() ?: "Desconocido")}" +
+                                                "&studios=${Uri.encode(anime.studios?.joinToString() ?: "Desconocido")}" +
+                                                "&producers=${Uri.encode(anime.producers?.joinToString() ?: "Desconocido")}" +
+                                                "&trailerUrl=${Uri.encode(anime.trailerUrl ?: "")}" +
+                                                "&episodes=${anime.episodes ?: -1}" +
+                                                "&synopsis=${Uri.encode(anime.synopsis ?: "Sin sinopsis disponible")}"
                                     )
                                 }
+
                             ) {
                                 Column {
                                     if (!anime.posterImage.isNullOrEmpty()) {
@@ -98,7 +124,9 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
                                     Text(
                                         text = formatTitle(anime.title ?: "Sin título"),
                                         modifier = Modifier
-                                            .fillMaxSize(), // Ajusta el padding superior
+                                            .fillMaxSize(),
+                                        fontFamily = customFont,
+                                        fontSize = 20.sp,
                                         textAlign = TextAlign.Center
                                     )
                                 }
@@ -135,8 +163,8 @@ fun ApiAnimeJikanScreen(navController: NavController, viewModel: AnimeJikanViewM
 }
 
 fun formatTitle(title: String): String {
-    return if (title.length > 12) {
-        title.take(9) + "..."
+    return if (title.length > 18) {
+        title.take(15) + "..."
     } else {
         title
     }

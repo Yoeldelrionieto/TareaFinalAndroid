@@ -49,10 +49,17 @@ class AnimeJikanViewModel : ViewModel() {
                                 producers = animeData.producers?.map { it.name },
                                 studios = animeData.studios?.map { it.name },
                                 duration = animeData.duration,
-                                aired = animeData.aired?.string
+                                aired = animeData.aired?.string,
+                                episodes = animeData.episodes,                          // Mapeo del campo episodes
+                                background = animeData.background ?: "No disponible",   // Mapeo del campo background
+                                relatedAnimes = animeData.relations?.flatMap { relation ->
+                                    relation.entry?.map { it.name ?: "Desconocido" } ?: emptyList()
+                                },
+                                coverImage = animeData.images?.jpg?.large_image_url,    // Mapeo del cover image
+                                backgroundImage = animeData.images?.jpg?.image_url      // Mapeo del background image
                             )
                         }
-                        _animes.value = _animes.value + animeList // Agregar sin ordenar
+                        _animes.value = _animes.value + animeList
                         currentPage++
                     }
                 } else {
